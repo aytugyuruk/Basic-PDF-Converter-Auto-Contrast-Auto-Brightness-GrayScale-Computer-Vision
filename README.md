@@ -8,10 +8,10 @@ Kullanıcıların bir PDF dosyası seçmesine, seçilen dosyanın tüm sayfalar�
 ## 📸 Ekran Görüntüleri
 
 ### Giriş (Dosya Seçim Ekranı)
-*input.png*
+![Input](input.png)
 
 ### Çıktı (İşlem Sonrası)
-*output.png*
+![Output](output.png)
 
 ---
 
