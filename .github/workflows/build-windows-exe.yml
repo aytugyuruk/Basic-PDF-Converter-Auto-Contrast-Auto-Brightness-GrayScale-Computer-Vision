@@ -1,57 +1,37 @@
 # Bu workflow'un adı. GitHub Actions arayüzünde bu isimle görünecektir.
 name: Windows icin EXE Olusturucu
 
-# Workflow'un ne zaman tetikleneceğini belirler.
 on:
-  # 1. 'main' branch'ine her push yapıldığında otomatik çalışır.
   push:
     branches: [ "main" ]
-  
-  # 2. GitHub Actions sekmesinden manuel olarak çalıştırma imkanı ekler.
   workflow_dispatch:
 
-# Workflow'un yapacağı işleri (job'ları) tanımlar.
 jobs:
-  # "build" adında bir job tanımlıyoruz.
   build:
-    # Bu job'un hangi sanal makinede çalışacağını belirtir. Windows için 'windows-latest' kullanıyoruz.
     runs-on: windows-latest
 
-    # Job'un adımlarını (steps) listeler.
     steps:
-      # 1. Adım: Proje kodlarını sanal makineye indirir.
       - name: Kodu indir (Checkout)
         uses: actions/checkout@v4
 
-      # 2. Adım: Belirtilen versiyonda Python'u kurar.
       - name: Python 3.11'i kur
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip' # Pip paketlerini cache'leyerek sonraki çalışmaları hızlandırır.
+          cache: 'pip'
 
-      # 3. Adım: Gerekli Python kütüphanelerini yükler.
       - name: Gerekli kütüphaneleri yükle
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
           pip install -r requirements.txt
 
-      # 4. Adım: PyInstaller kullanarak .exe dosyasını oluşturur.
       - name: PyInstaller ile EXE oluştur
         run: |
-          pyinstaller --name "PDFDuzenleyici" --onefile --windowed --icon=NONE pdf_editor.py
-          # --name: Oluşturulacak .exe dosyasının adını belirler.
-          # --onefile: Tüm bağımlılıkları tek bir .exe dosyasına paketler.
-          # --windowed: Program çalıştığında arkada bir komut satırı penceresi açılmasını engeller (GUI uygulamaları için zorunludur).
-          # --icon=NONE: Özel bir ikon dosyası kullanmayacağımızı belirtir. Eğer bir .ico dosyanız varsa, yolunu belirtebilirsiniz.
+          pyinstaller --name "PDFDuzenleyici" --onefile --windowed --icon=NONE main.py
 
-      # 5. Adım: Oluşturulan .exe dosyasını "artifact" olarak kaydeder.
-      # Bu sayede workflow tamamlandıktan sonra dosyayı indirebilirsiniz.
       - name: Olusturulan EXE'yi artifact olarak yükle
         uses: actions/upload-artifact@v4
         with:
-          # Artifact paketinin adı.
           name: PDFDuzenleyici-Windows
-          # Yüklenecek dosyanın yolu. PyInstaller çıktıyı 'dist' klasörüne koyar.
           path: dist/PDFDuzenleyici.exe
